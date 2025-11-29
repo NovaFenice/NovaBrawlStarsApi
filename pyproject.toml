@@ -1,0 +1,24 @@
+[project]
+name = "novabrawlstars"
+version = "0.1.0"
+authors = [
+    { name = "NovaFenice" }
+]
+description = "Unofficial Python wrapper for the Brawl Stars API."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { file = "LICENSE" }
+
+dependencies = [
+    "requests"
+]
+
+[project.urls]
+Homepage = "https://github.com/NovaFenice/NovaBrawlStarsAPI"
+Documentation = "https://github.com/NovaFenice/NovaBrawlStarsAPI"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = {"src"}
