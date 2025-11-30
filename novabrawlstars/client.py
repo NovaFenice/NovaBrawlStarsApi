@@ -3,9 +3,11 @@ from .exceptions import (
     ApiError,
     InvalidTokenError,
     RateLimitError,
-    NotFoundError
+    NotFoundError,
+    UnexpectedError,
+    ServiceErrorMaintenance
 )
-from .models.player import Player
+from .models import Player, BattleLogListType
 
 class NovaBrawlStars:
     BASE_URL = "https://api.brawlstars.com/v1"
@@ -42,12 +44,16 @@ class NovaBrawlStars:
 
         if status == 200:
             return response.json()
-        if status == 401:
-            raise InvalidTokenError("Invalid API token.", code=401)
+        if status == 403:
+            raise InvalidTokenError("Invalid API token.", code=400)
         if status == 404:
             raise NotFoundError("Resource not found.", code=404)
         if status == 429:
             raise RateLimitError("Rate limit exceeded.", code=429)
+        if status == 500:
+            raise UnexpectedError("Internal server error.", code=500)
+        if status == 503:
+            raise ServiceErrorMaintenance("Service is under maintenance.", code=503)
 
         raise ApiError(response.text, code=status)
 
@@ -64,3 +70,15 @@ class NovaBrawlStars:
         tag = self._clean_tag(tag)
         data = self._request(f"/players/%23{tag}")
         return Player(data)
+    
+    def get_battlelog(self, tag: str) -> BattleLogListType:
+        """
+        Get a BattleLog object from the API using the player tag.
+        """
+        tag = self._clean_tag(tag)
+        data = self._request(f"/players/%23{tag}/battlelog")
+        return BattleLogListType(data)
+    
+    def __repr__(self):
+        cls_name = self.__class__.__module__ + "." + self.__class__.__qualname__
+        return f"<{cls_name} id={self.id} mode={self.mode!r} map={self.map!r}>"

@@ -29,3 +29,19 @@ class RateLimitError(Exception):
     def __init__(self, message, code=None):
         super().__init__(f"Rate Limit [{code}] {message}" if code else message)
         self.code = code
+
+class UnexpectedError(Exception):
+    """
+    Raised when an unexpected error occurs.
+    """
+    def __init__(self, message, code=None):
+        super().__init__(f"Unexpected Error [{code}] {message}" if code else message)
+        self.code = code
+
+class ServiceErrorMaintenance(Exception):
+    """
+    Raised when the service is under maintenance.
+    """
+    def __init__(self, message, code=None):
+        super().__init__(f"Service Maintenance [{code}] {message}" if code else message)
+        self.code = code

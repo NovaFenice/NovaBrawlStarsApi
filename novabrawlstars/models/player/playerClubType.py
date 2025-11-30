@@ -13,7 +13,5 @@ class PlayerClubType:
         self.name: str = data.get("name", "")
 
     def __repr__(self):
-        return f"<PlayerClub name={self.name} tag={self.tag}>"
-    
-    def __str__(self):
-        return f"Club: {self.name} ({self.tag})"
+        cls_name = self.__class__.__module__ + "." + self.__class__.__qualname__
+        return f"<{cls_name} id={self.id} mode={self.mode!r} map={self.map!r}>"

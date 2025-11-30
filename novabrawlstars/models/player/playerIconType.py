@@ -7,12 +7,11 @@ class PlayerIconType:
             Dictionary containing club info from the API
             Expected key: 'id'
         """
-
-        self.id: int = data["id"]
+        if data is None:
+            data = {}
+        self.id: int = data.get("id", "")
         self.iconUrl: str = f"https://cdn.brawlify.com/profile-icons/regular/{self.id}.png"
 
     def __repr__(self):
-        return f"<PlayerIcon id={self.id} iconUrl={self.iconUrl}>"
-    
-    def __str__(self):
-        return f"PlayerIcon: {self.id} ({self.iconUrl})"
+        cls_name = self.__class__.__module__ + "." + self.__class__.__qualname__
+        return f"<{cls_name} id={self.id} mode={self.mode!r} map={self.map!r}>"

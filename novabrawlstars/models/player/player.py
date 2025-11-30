@@ -4,76 +4,45 @@ from .brawlerStatsType import BrawlerStatsListType
 
 class Player:
     def __init__(self, data: dict):
-        self.tag: str = data["tag"]
-        self.name: str = data["name"]
-        self.nameColor: str = data["nameColor"]
-        self.trophies: int = data["trophies"]
-        self.highestTrophies: int = data["highestTrophies"]
+        """
+        Initialize the Player.
 
-        self.soloVictories: int = data["soloVictories"]
-        self.duoVictories: int = data["duoVictories"]
-        self.threeVsThreeVictories: int = data["3vs3Victories"]
-        self.bestRoboRumbleTime: int = data["bestRoboRumbleTime"]
-        self.bestTimeAsBigBrawler: int = data["bestTimeAsBigBrawler"]
+        data: dict
+            Dictionary containing player info from the API
+            Expected keys: 'tag', 'name', 'nameColor', 'trophies', 'highestTrophies',
+                           'soloVictories', 'duoVictories', '3vs3Victories', 'bestRoboRumbleTime',
+                           'bestTimeAsBigBrawler', 'expLevel', 'expPoints', 'isQualifiedFromChampionshipChallenge',
+                           'club', 'icon', 'brawlerStats'
+        """
+        if data is None:
+            data = {}
 
-        self.expLevel: int = data["expLevel"]
-        self.expPoints: int = data["expPoints"]
+        self.tag: str = data.get("tag", "")
+        self.name: str = data.get("name", "")
+        self.nameColor: str = data.get("nameColor", "")
+        self.trophies: int = data.get("trophies", 0)
+        self.highestTrophies: int = data.get("highestTrophies", 0)
 
-        self.isQualifiedFromChampionshipChallenge: bool = data["isQualifiedFromChampionshipChallenge"]
+        self.soloVictories: int = data.get("soloVictories", 0)
+        self.duoVictories: int = data.get("duoVictories", 0)
+        self.threeVsThreeVictories: int = data.get("3vs3Victories", 0)
+        self.bestRoboRumbleTime: int = data.get("bestRoboRumbleTime", 0)
+        self.bestTimeAsBigBrawler: int = data.get("bestTimeAsBigBrawler", 0)
 
-        club_data = data["club"]
-        self.club: PlayerClubType | None = PlayerClubType(club_data) if club_data else None
+        self.expLevel: int = data.get("expLevel", 0)
+        self.expPoints: int = data.get("expPoints", 0)
 
-        icon_data = data["icon"]
-        self.icon: PlayerIconType | None = PlayerIconType(icon_data) if icon_data else None
+        self.isQualifiedFromChampionshipChallenge: bool = data.get("isQualifiedFromChampionshipChallenge", False)
+
+        club_data = data.get("club", {})
+        self.club: PlayerClubType = PlayerClubType(club_data)
+
+        icon_data = data.get("icon", {})
+        self.icon: PlayerIconType = PlayerIconType(icon_data)
 
         brawlers_data = data.get("brawlers", [])
         self.brawlers: BrawlerStatsListType = BrawlerStatsListType(brawlers_data)
 
     def __repr__(self):
-        return f"<Player name={self.name} tag={self.tag}>"
-    
-    def __str__(self):
-        """
-        Pretty printing player.
-        """
-        if self.club is None:
-            club_str = "{}"
-        else:
-            club_str = (
-                "{\n"
-                f"    tag: {self.club.tag},\n"
-                f"    name: {self.club.name}\n"
-                "}"
-            )
-
-        if self.icon is None:
-            player_icon_str = "{}"
-        else:
-            player_icon_str = (
-                "{\n"
-                f"    id: {self.icon.id},\n"
-                f"    iconUrl: {self.icon.iconUrl}\n"
-                "}"
-            )
-
-        brawlers_str = "\n".join([f"    {brawler.name} (Trophies: {brawler.trophies})" for brawler in self.brawlers.brawlers_list])
-
-        return (
-            f"Name: {self.name}\n"
-            f"Tag: {self.tag}\n"
-            f"NameColor: {self.nameColor}\n"
-            f"PlayerIcon: {player_icon_str} \n"
-            f"Club: {club_str}\n"
-            f"Trophies: {self.trophies}\n"
-            f"HighestTrophies: {self.highestTrophies}\n"
-            f"SoloVictories: {self.soloVictories}\n"
-            f"DuoVictories: {self.duoVictories}\n"
-            f"3vs3Victories: {self.threeVsThreeVictories}\n"
-            f"BestRoboRumbleTime: {self.bestRoboRumbleTime}\n"
-            f"BestTimeAsBigBrawler: {self.bestTimeAsBigBrawler}\n"
-            f"ExpLevel: {self.expLevel}\n"
-            f"ExpPoints: {self.expPoints}\n"
-            f"IsQualifiedFromChampionshipChallenge: {self.isQualifiedFromChampionshipChallenge}\n"
-            f"Brawlers:\n{brawlers_str}\n"
-        )
+        cls_name = self.__class__.__module__ + "." + self.__class__.__qualname__
+        return f"<{cls_name} id={self.id} mode={self.mode!r} map={self.map!r}>"
