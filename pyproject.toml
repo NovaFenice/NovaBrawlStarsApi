@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "novabrawlstars"
 version = "0.1.0"
@@ -8,9 +12,15 @@ description = "Unofficial Python wrapper for the Brawl Stars API."
 readme = "README.md"
 requires-python = ">=3.8"
 license = { file = "LICENSE" }
+keywords = ["brawl stars", "api", "python", "wrapper"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
 
 dependencies = [
-    "requests", "dotenv"
+    "requests", "python-dotenv"
 ]
 
 [project.urls]
