@@ -10,15 +10,12 @@ requires-python = ">=3.8"
 license = { file = "LICENSE" }
 
 dependencies = [
-    "requests"
+    "requests", "httpx"
 ]
 
 [project.urls]
 Homepage = "https://github.com/NovaFenice/NovaBrawlStarsAPI"
 Documentation = "https://github.com/NovaFenice/NovaBrawlStarsAPI"
 
-[tool.setuptools]
-package-dir = {"" = "src"}
-
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["."]
