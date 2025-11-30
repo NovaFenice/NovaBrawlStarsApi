@@ -14,7 +14,7 @@ A Python library to easily interact with the Brawl Stars API and fetch player in
 You can install NovaBrawlStarsApi via pip:
 
 ```bash
-pip install NovaBrawlStarsApi
+pip install novabrawlstars
 ```
 
 Or clone the repo and installation dependencies manually:
