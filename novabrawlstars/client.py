@@ -75,6 +75,3 @@ class NovaBrawlStars:
         tag = self._clean_tag(tag)
         data = self._run(self._async_request(f"/players/%23{tag}"))
         return Player(data)
-    
-    def close(self):
-        self._run(self._async_client.aclose())

@@ -5,3 +5,4 @@ client = NovaBrawlStars("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY
 player = client.get_player("VLR2RQYP")
 #player = client.get_player("2U9CC2VYL")
 
+print(player)

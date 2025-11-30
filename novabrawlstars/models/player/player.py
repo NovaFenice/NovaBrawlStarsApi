@@ -57,7 +57,7 @@ class Player:
                 "}"
             )
 
-        brawlers_str = "\n".join([f"    {brawler.name} (Trophies: {brawler.trophies})" for brawler in self.brawlers.brawlers])
+        brawlers_str = "\n".join([f"    {brawler.name} (Trophies: {brawler.trophies})" for brawler in self.brawlers.brawlers_list])
 
         return (
             f"Name: {self.name}\n"
