@@ -30,7 +30,7 @@ cd NovaBrawlStarsApi
 ### How to get players info
 
 ```py
-from novabrawlstars import NovaBrawlStars
+from novabrawlstars.client import NovaBrawlStars
 import os
 from dotenv import load_dotenv
 
@@ -47,7 +47,7 @@ player_1 = nb.get_player(tag_p1) # Get a Player object from the API
 ### How to get battlelog info
 
 ```py
-from novabrawlstars import NovaBrawlStars
+from novabrawlstars.client import NovaBrawlStars
 import os
 from dotenv import load_dotenv
 
