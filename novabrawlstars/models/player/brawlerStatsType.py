@@ -32,10 +32,6 @@ class BrawlerStatsType:
 
         self.gears: List[BrawlerGearStatsType] = [BrawlerGearStatsType(g) for g in data.get("gears", []) if g]
 
-    def __repr__(self):
-        cls_name = self.__class__.__module__ + "." + self.__class__.__qualname__
-        return f"<{cls_name} id={self.id} mode={self.mode!r} map={self.map!r}>"
-
 class BrawlerStatsListType:
     def __init__(self, data: List[dict]):
         """
@@ -46,7 +42,3 @@ class BrawlerStatsListType:
             Expected keys: 'id', 'name', 'rank', 'trophies', 'highestTrophies', 'power', 'maxWinStreak', 'currentWinStreak', 'gadgets', 'starPowers', 'gearStats'
         """
         self.brawlersList: List[BrawlerStatsType] = [BrawlerStatsType(b) for b in data if b]
-
-    def __repr__(self):
-        cls_name = self.__class__.__module__ + "." + self.__class__.__qualname__
-        return f"<{cls_name} id={self.id} mode={self.mode!r} map={self.map!r}>"

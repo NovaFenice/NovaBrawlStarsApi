@@ -17,10 +17,6 @@ class BattleLogType:
         self.event: BattleEventType = BattleEventType(data.get("event", {}))
         self.battle: BattleResultType = BattleResultType(data.get("battle", {}))
 
-    def __repr__(self):
-        cls_name = self.__class__.__module__ + "." + self.__class__.__qualname__
-        return f"<{cls_name} battleTime={self.battleTime!r}>"
-
 class BattleLogListType:
     def __init__(self, data: dict):
         """
@@ -33,7 +29,3 @@ class BattleLogListType:
         if data is None:
             data = {}
         self.battlesLogList: List[BattleLogType] = [BattleLogType(b) for b in data.get("items", []) if b]
-
-    def __repr__(self):
-        cls_name = self.__class__.__module__ + "." + self.__class__.__qualname__
-        return f"<{cls_name} battles={len(self.battlesLogList)}>"

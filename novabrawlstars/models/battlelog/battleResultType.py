@@ -21,7 +21,3 @@ class BattleResultType:
         self.rank: int = data.get("rank", 0)
         self.starPlayer: StarPlayerType = StarPlayerType(data.get("starPlayer", {}))
         self.teams: BattleTeamsListType = BattleTeamsListType(data.get("teams", []))
-
-    def __repr__(self):
-        cls_name = self.__class__.__module__ + "." + self.__class__.__qualname__
-        return f"<{cls_name} mode={self.mode!r} result={self.result!r}>"

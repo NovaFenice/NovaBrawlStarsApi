@@ -15,7 +15,3 @@ class StarPlayerType:
         self.tag: str = data.get("tag", "")
         self.name: str = data.get("name", "")
         self.brawler: BrawlerBattleType = BrawlerBattleType(data.get("brawler", {}))
-
-    def __repr__(self):
-        cls_name = self.__class__.__module__ + "." + self.__class__.__qualname__
-        return f"<{cls_name} mode={self.mode!r} result={self.result!r}>"

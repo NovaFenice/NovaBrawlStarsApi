@@ -34,15 +34,8 @@ class Player:
 
         self.isQualifiedFromChampionshipChallenge: bool = data.get("isQualifiedFromChampionshipChallenge", False)
 
-        club_data = data.get("club", {})
-        self.club: PlayerClubType = PlayerClubType(club_data)
+        self.club: PlayerClubType = PlayerClubType(data.get("club", {}))
 
-        icon_data = data.get("icon", {})
-        self.icon: PlayerIconType = PlayerIconType(icon_data)
+        self.icon: PlayerIconType = PlayerIconType(data.get("icon", {}))
 
-        brawlers_data = data.get("brawlers", [])
-        self.brawlers: BrawlerStatsListType = BrawlerStatsListType(brawlers_data)
-
-    def __repr__(self):
-        cls_name = self.__class__.__module__ + "." + self.__class__.__qualname__
-        return f"<{cls_name} id={self.id} mode={self.mode!r} map={self.map!r}>"
+        self.brawlers: BrawlerStatsListType = BrawlerStatsListType(data.get("brawlers", []))

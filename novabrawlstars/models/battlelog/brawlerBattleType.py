@@ -15,7 +15,3 @@ class BrawlerBattleType:
         self.iconBrawlerUrl: str = f"https://cdn.brawlify.com/brawlers/borderless/{self.id}.png" if self.id != 0 else ""
         self.power: int = data.get("power", 0)
         self.trophies: int = data.get("trophies", 0)
-
-    def __repr__(self):
-        cls_name = self.__class__.__module__ + "." + self.__class__.__qualname__
-        return f"<{cls_name} mode={self.mode!r} result={self.result!r}>"
