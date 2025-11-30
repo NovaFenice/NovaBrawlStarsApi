@@ -1,6 +1,4 @@
-import asyncio
-import httpx
-
+import requests
 from .exceptions import (
     ApiError,
     InvalidTokenError,
@@ -27,23 +25,23 @@ class NovaBrawlStars:
         
         self.token = token
 
-        self._async_client = httpx.AsyncClient(
-            base_url=self.BASE_URL,
-            headers={
-                "Authorization": f"Bearer {self.token}",
-                "Accept": "application/json",
-                "User-Agent": "NovaBrawlStarsAPI/1.0"
-            },
-            timeout=10.0
-        )
+        self.session = requests.Session()
+        self.session.headers.update({
+            "Authorization": f"Bearer {self.token}",
+            "Accept": "application/json",
+            "User-Agent": "NovaBrawlStarsAPI/1.0"
+        })
 
-    async def _async_request(self, endpoint: str):
-        response = await self._async_client.get(endpoint)
+    def _request(self, endpoint: str):
+        """
+        Perform a synchronous HTTP GET request to the API.
+        """
+        url = f"{self.BASE_URL}{endpoint}"
+        response = self.session.get(url)
         status = response.status_code
 
         if status == 200:
             return response.json()
-        
         if status == 401:
             raise InvalidTokenError("Invalid API token.", code=401)
         if status == 404:
@@ -52,26 +50,17 @@ class NovaBrawlStars:
             raise RateLimitError("Rate limit exceeded.", code=429)
 
         raise ApiError(response.text, code=status)
-    
-    def _run(self, coro):
-        """
-        Runs async code safely even if the user is not using asyncio.
-        """
-        try:
-            return asyncio.run(coro)
-        except RuntimeError:
-            loop = asyncio.get_event_loop()
-            return loop.run_until_complete(coro)
-    
+
     def _clean_tag(self, tag: str) -> str:
-        return (
-            tag.strip() 
-            .replace("#", "")
-            .replace(" ", "")
-            .upper()          
-        )
-    
+        """
+        Clean the player tag by removing #, spaces, and converting to uppercase.
+        """
+        return tag.strip().replace("#", "").replace(" ", "").upper()
+
     def get_player(self, tag: str) -> Player:
+        """
+        Get a Player object from the API using the player tag.
+        """
         tag = self._clean_tag(tag)
-        data = self._run(self._async_request(f"/players/%23{tag}"))
+        data = self._request(f"/players/%23{tag}")
         return Player(data)

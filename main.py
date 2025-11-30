@@ -1,8 +1,17 @@
 from novabrawlstars import NovaBrawlStars
+import os
+from dotenv import load_dotenv
 
-client = NovaBrawlStars("eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6Ijk5NmJkNzNhLTE5YTktNDUzOC1hMTFhLTZiYWNiYWFmNDFhOCIsImlhdCI6MTc2NDM2OTk4Nywic3ViIjoiZGV2ZWxvcGVyLzRmMmZiMTIxLTI1YTUtNjM2Yi00OWRhLTFjNzlkODE4MTU0MyIsInNjb3BlcyI6WyJicmF3bHN0YXJzIl0sImxpbWl0cyI6W3sidGllciI6ImRldmVsb3Blci9zaWx2ZXIiLCJ0eXBlIjoidGhyb3R0bGluZyJ9LHsiY2lkcnMiOlsiNzkuMTIuMTQ1LjE3NyJdLCJ0eXBlIjoiY2xpZW50In1dfQ.vhIbU4l0TOR-Z8WQwtE6qH8ad_o6t_ALa54S_3IR9RcJ_brbexof51yqqNVYmHOJos89Uh33wxXDpi5TMrFf6A")
+load_dotenv()
 
-player = client.get_player("VLR2RQYP")
-#player = client.get_player("2U9CC2VYL")
+api_bs = os.getenv("api_bs") # Your Brawl Stars API token
+tag_p1 = os.getenv("tag_p1") # Brawl Stars Player tag (es. #12345678 or 12345678)
+tag_p2 = os.getenv("tag_p2") # Brawl Stars Player tag (es. #12345678 or 12345678)
 
-print(player)
+nb = NovaBrawlStars(api_bs) # Initialize the Brawl Stars API client
+
+player_1 = nb.get_player(tag_p1) # Get a Player object from the API
+player_2 = nb.get_player(tag_p2) # Get a Player object from the API
+
+print(player_1)
+print(player_2)
