@@ -61,6 +61,26 @@ nb = NovaBrawlStars(api_bs) # Initialize the Brawl Stars API client
 player_1 = nb.get_battlelog(tag_p1) # Get a BattleLogListType object from the API
 ```
 
+### How to get club info
+
+```py
+from novabrawlstars.client import NovaBrawlStars
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+api_bs = os.getenv("api_bs") # Your Brawl Stars API token
+
+nb = NovaBrawlStars(api_bs) # Initialize the Brawl Stars API client
+player = nb.get_player(os.getenv("tag_p1")) # Get a Player object from the API
+club = nb.get_player_club(player.club.tag) # Get a Club object passing the player tag from the API 
+
+# or
+
+club = nb.get_player_club(os.getenv("tag_c1")) # Get a Club object from the API
+```
+
 ## Notes
 
 - Make sure to replace the player tags and API token.

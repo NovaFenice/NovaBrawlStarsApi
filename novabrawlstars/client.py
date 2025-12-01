@@ -7,7 +7,7 @@ from .exceptions import (
     UnexpectedError,
     ServiceErrorMaintenance
 )
-from .models import Player, BattleLogListType
+from .models import Player, BattleLogListType, Club
 
 class NovaBrawlStars:
     BASE_URL = "https://api.brawlstars.com/v1"
@@ -78,3 +78,11 @@ class NovaBrawlStars:
         tag = self._clean_tag(tag)
         data = self._request(f"/players/%23{tag}/battlelog")
         return BattleLogListType(data)
+    
+    def get_player_club(self, tagClub: str) -> Club:
+        """
+        Get a Club object from the API using the player tag.
+        """
+        tagClub = self._clean_tag(tagClub)
+        data = self._request(f"/clubs/%23{tagClub}")
+        return Club(data)
