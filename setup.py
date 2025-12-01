@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name="novabrawlstars",
-    version="0.1.4",
+    version="0.1.5",
     description="Unofficial Python wrapper for the Brawl Stars API.",
     long_description=open("README.md", "r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
