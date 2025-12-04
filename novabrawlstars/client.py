@@ -1,4 +1,4 @@
-import requests
+import httpx
 from .exceptions import (
     ApiError,
     InvalidTokenError,
@@ -10,79 +10,158 @@ from .exceptions import (
 from .models import Player, BattleLogListType, Club
 
 class NovaBrawlStars:
-    BASE_URL = "https://api.brawlstars.com/v1"
+    """
+    Asynchronous client for interacting with the official Brawl Stars API.
+    
+    This class handles authentication, HTTP sessions, and JSON response parsing.
+    It supports usage as an asynchronous context manager (async with).
+    """
 
-    def __init__(self, token: str):
+    __BASE_URL = "https://api.brawlstars.com/v1"
+
+    def __init__(self, token: str, timeout: float = 10.0):
         """
-        Initialize the Brawl Stars API client.
+        Initializes the NovaBrawlStars client.
 
-        Parameters:
-        -----------
-        token : str
-            Your Brawl Stars API token.
-            You can get it from https://developer.brawlstars.com/
+        Args:
+            token (str): The API token obtained from the Brawl Stars developer portal.
+            timeout (float): The maximum time (in seconds) to wait for a response. Defaults to 10.0.
+
+        Raises:
+            InvalidTokenError: If the provided token is empty or not a string.
         """
         if not token or not isinstance(token, str) or token.strip() == "":
             raise InvalidTokenError("API token is required")
         
-        self.token = token
+        self.__token = token
 
-        self.session = requests.Session()
-        self.session.headers.update({
-            "Authorization": f"Bearer {self.token}",
+        headers = {
+            "Authorization": f"Bearer {self.__token}",
             "Accept": "application/json",
             "User-Agent": "NovaBrawlStarsAPI/1.0"
-        })
+        }
 
-    def _request(self, endpoint: str):
+        self.client = httpx.AsyncClient(
+            headers=headers,
+            timeout=timeout,
+            follow_redirects=True
+        )
+    
+    async def close(self):
         """
-        Perform a synchronous HTTP GET request to the API.
+        Closes the underlying HTTP client and releases resources.
         """
-        url = f"{self.BASE_URL}{endpoint}"
-        response = self.session.get(url)
-        status = response.status_code
+        await self.client.aclose()
 
-        if status == 200:
-            return response.json()
-        if status == 403:
-            raise InvalidTokenError("Invalid API token.", code=400)
-        if status == 404:
-            raise NotFoundError("Resource not found.", code=404)
-        if status == 429:
-            raise RateLimitError("Rate limit exceeded.", code=429)
-        if status == 500:
-            raise UnexpectedError("Internal server error.", code=500)
-        if status == 503:
-            raise ServiceErrorMaintenance("Service is under maintenance.", code=503)
-
-        raise ApiError(response.text, code=status)
-
-    def _clean_tag(self, tag: str) -> str:
+    async def __aenter__(self):
         """
-        Clean the player tag by removing #, spaces, and converting to uppercase.
+        Enables use of the 'async with' context manager.
+        Returns the client instance.
+        """
+        return self
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        """
+        Enables use of the 'async with' context manager.
+        Automatically closes the client when exiting the block.
+        """
+        await self.close()
+
+    async def __request(self, endpoint: str):
+        """
+        Performs an internal HTTP GET request to the API.
+
+        Automatically handles HTTP status codes and raises appropriate exceptions
+        for errors.
+
+        Args:
+            endpoint (str): The endpoint path (e.g., "/players/...").
+
+        Returns:
+            dict: The JSON data returned by the API if successful (status 200).
+
+        Raises:
+            InvalidTokenError: If the API token is invalid (403).
+            NotFoundError: If the requested resource does not exist (404).
+            RateLimitError: If the request limit has been exceeded (429).
+            UnexpectedError: For internal server errors (500) or network issues.
+            ServiceErrorMaintenance: If the API is under maintenance (503).
+            ApiError: For any other unhandled HTTP errors.
+        """
+        __url = f"{self.__BASE_URL}{endpoint}"
+
+        try:
+            response = await self.client.get(__url)
+            status = response.status_code
+
+            if status == 200:
+                return response.json()
+            if status == 403:
+                raise InvalidTokenError("Invalid API token.", code=403)
+            if status == 404:
+                raise NotFoundError("Resource not found.", code=404)
+            if status == 429:
+                raise RateLimitError("Rate limit exceeded.", code=429)
+            if status == 500:
+                raise UnexpectedError("Internal server error.", code=500)
+            if status == 503:
+                raise ServiceErrorMaintenance("Service is under maintenance.", code=503)
+        
+            raise ApiError(response.text, code=status)
+        except httpx.RequestError as e:
+            raise UnexpectedError(f"Network error occurred: {str(e)}", code=0)
+        
+    def __clean_tag(self, tag: str) -> str:
+        """
+        Cleans the provided tag by removing '#' characters and spaces,
+        and converting it to uppercase.
+
+        Args:
+            tag (str): The raw tag (e.g., "#PY982").
+
+        Returns:
+            str: The cleaned tag (e.g., "PY982").
         """
         return tag.strip().replace("#", "").replace(" ", "").upper()
 
-    def get_player(self, tag: str) -> Player:
+    async def get_player(self, tag: str) -> Player:
         """
-        Get a Player object from the API using the player tag.
+        Retrieves information about a specific player.
+
+        Args:
+            tag (str): The player tag (with or without '#').
+
+        Returns:
+            Player: An object containing the player's data.
         """
-        tag = self._clean_tag(tag)
-        data = self._request(f"/players/%23{tag}")
+        tag = self.__clean_tag(tag)
+        data = await self.__request(f"/players/%23{tag}")
         return Player(data)
     
-    def get_battlelog(self, tag: str) -> BattleLogListType:
+    async def get_battlelog(self, tag: str) -> BattleLogListType:
         """
-        Get a BattleLog object from the API using the player tag.
+        Retrieves the battle log (recent matches) for a specific player.
+
+        Args:
+            tag (str): The player tag.
+
+        Returns:
+            BattleLogListType: An object containing a list of recent battles.
         """
-        tag = self._clean_tag(tag)
-        data = self._request(f"/players/%23{tag}/battlelog")
+        tag = self.__clean_tag(tag)
+        data = await self.__request(f"/players/%23{tag}/battlelog")
         return BattleLogListType(data)
     
-    def get_player_club(self, tagClub: str) -> Club:
+    async def get_player_club(self, tagClub: str) -> Club:
         """
-        Get a Club object from the API using the player tag.
+        Retrieves information about a specific club.
+
+        Args:
+            tagClub (str): The club tag.
+
+        Returns:
+            Club: An object containing the club's data.
         """
-        tagClub = self._clean_tag(tagClub)
-        data = self._request(f"/clubs/%23{tagClub}")
+        tagClub = self.__clean_tag(tagClub)
+        data = await self.__request(f"/clubs/%23{tagClub}")
         return Club(data)

@@ -32,16 +32,23 @@ cd NovaBrawlStarsApi
 ```py
 from novabrawlstars.client import NovaBrawlStars
 import os
+import asyncio
 from dotenv import load_dotenv
 
 load_dotenv()
 
-api_bs = os.getenv("api_bs") # Your Brawl Stars API token
-tag_p1 = os.getenv("tag_p1") # Brawl Stars Player tag (es. #12345678 or 12345678)
+async def main():
+    api_bs = os.getenv("api_bs") # Your Brawl Stars API token
+    tag_p1 = os.getenv("tag_p1") # Brawl Stars Player tag (es. #12345678 or 12345678)
+    nb = NovaBrawlStars(api_bs) # Initialize the Brawl Stars API client
+    
+    async with nb as client:
+        player = await client.get_player(tag_p1)  # Get a Player object from the API
 
-nb = NovaBrawlStars(api_bs) # Initialize the Brawl Stars API client
+    await nb.close() # Close the HTTP client session
 
-player_1 = nb.get_player(tag_p1) # Get a Player object from the API
+if __name__ == "__main__":
+    asyncio.run(main()) # Run the main function
 ```
 
 ### How to get battlelog info
@@ -49,16 +56,23 @@ player_1 = nb.get_player(tag_p1) # Get a Player object from the API
 ```py
 from novabrawlstars.client import NovaBrawlStars
 import os
+import asyncio
 from dotenv import load_dotenv
 
 load_dotenv()
 
-api_bs = os.getenv("api_bs") # Your Brawl Stars API token
-tag_p1 = os.getenv("tag_p1") # Brawl Stars Player tag (es. #12345678 or 12345678)
+async def main():
+    api_bs = os.getenv("api_bs") # Your Brawl Stars API token
+    tag_p1 = os.getenv("tag_p1") # Brawl Stars Player tag (es. #12345678 or 12345678)
+    nb = NovaBrawlStars(api_bs) # Initialize the Brawl Stars API client
+    
+    async with nb as client:
+        player_battlelog = await client.get_battlelog(tag_p1)  # Get a BattleLogListType object from the API
 
-nb = NovaBrawlStars(api_bs) # Initialize the Brawl Stars API client
+    await nb.close() # Close the HTTP client session
 
-player_1 = nb.get_battlelog(tag_p1) # Get a BattleLogListType object from the API
+if __name__ == "__main__":
+    asyncio.run(main()) # Run the main function
 ```
 
 ### How to get club info
@@ -66,19 +80,24 @@ player_1 = nb.get_battlelog(tag_p1) # Get a BattleLogListType object from the AP
 ```py
 from novabrawlstars.client import NovaBrawlStars
 import os
+import asyncio
 from dotenv import load_dotenv
 
 load_dotenv()
 
-api_bs = os.getenv("api_bs") # Your Brawl Stars API token
+async def main():
+    api_bs = os.getenv("api_bs") # Your Brawl Stars API token
+    tag_p1 = os.getenv("tag_p1") # Brawl Stars Player tag (es. #12345678 or 12345678)
+    nb = NovaBrawlStars(api_bs) # Initialize the Brawl Stars API client
+    
+    async with nb as client:
+        player = await client.get_player(tag_p1)  # Get a BattleLogListType object from the API
+        club = await client.get_player_club(player.club.tag) # Get a Club object passing the player 
 
-nb = NovaBrawlStars(api_bs) # Initialize the Brawl Stars API client
-player = nb.get_player(os.getenv("tag_p1")) # Get a Player object from the API
-club = nb.get_player_club(player.club.tag) # Get a Club object passing the player tag from the API 
+    await nb.close() # Close the HTTP client session
 
-# or
-
-club = nb.get_player_club(os.getenv("tag_c1")) # Get a Club object from the API
+if __name__ == "__main__":
+    asyncio.run(main()) # Run the main function
 ```
 
 ## Notes
