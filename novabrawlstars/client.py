@@ -7,7 +7,7 @@ from .exceptions import (
     UnexpectedError,
     ServiceErrorMaintenance
 )
-from .models import Player, BattleLogListType, Club
+from .models import Player, BattleLogListType, Club, ClubMemberArgs
 
 class NovaBrawlStars:
     """
@@ -165,3 +165,37 @@ class NovaBrawlStars:
         tagClub = self.__clean_tag(tagClub)
         data = await self.__request(f"/clubs/%23{tagClub}")
         return Club(data)
+    
+    async def get_club_members(self, tagClub: str, limit: int | None = None, after: str | None = None, before: str | None = None) -> ClubMemberArgs:
+        """
+        Retrieves the list of members in a specific club.
+
+        Args:
+            tagClub (str): The club tag.
+            limit (int | None): Maxium number of members to return. Optional.
+            after (str | None): Cursor for pagination to get members after this tag. Optional.
+            before (str | None): Cursor for pagination to get members before this tag. Optional.
+
+        Returns:
+            ClubMemberArgs: An object containing the list of club members and pagination info.
+        """
+
+        query = ""
+
+        if limit is not None and limit < 1:
+            raise ValueError("Limit must be greater than 0.")
+        if after is not None and before is not None:
+            raise ValueError("Cannot use both 'after' and 'before' for pagination.")
+        if after is not None:
+            query += f"?after={after}"
+        if before is not None:
+            query += f"?before={before}"
+        if limit is not None:
+            if query == "":
+                query += f"?limit={limit}"
+            else:
+                query += f"&limit={limit}"
+        
+        tagClub = self.__clean_tag(tagClub)
+        data: dict = await self.__request(f"/clubs/%23{tagClub}/members{query}")
+        return ClubMemberArgs(data)

@@ -29,7 +29,7 @@ class ClubMember:
         """The current number of trophies held by the member."""
 
         self.role: str = data.get("role", "")
-        """The member's role in the club (e.g., 'member', 'senior', 'vicePresident', 'president')."""
+        """The member's role in the club (e.g., 'notMember', 'member', 'senior', 'vicePresident', 'president', 'unknown')."""
 
         self.nameColor: str = data.get("nameColor", "")
         """The hex code of the member's name color."""

@@ -100,6 +100,35 @@ if __name__ == "__main__":
     asyncio.run(main()) # Run the main function
 ```
 
+### How to get club members info using pagination
+
+```py
+from novabrawlstars.client import NovaBrawlStars
+import os
+import asyncio
+from dotenv import load_dotenv
+
+load_dotenv()
+
+async def main():
+    api_bs = os.getenv("api_bs") # Your Brawl Stars API token
+    tag_p1 = os.getenv("tag_p1") # Brawl Stars Player tag (es. #12345678 or 12345678)
+
+    nb = NovaBrawlStars(api_bs) # Initialize the Brawl Stars API client
+
+    async with nb as client:
+        player = await client.get_player(tag_p1) # Get a Player object from the API
+        club_members = await client.get_club_members(player.club.tag, limit=5) # Get Club Members with pagination
+        after = club_members.paging.cursors.after # Get the 'after' cursor for pagination
+        refetched_after_member = await client.get_club_members(player.club.tag, after=after, limit=5) # Refetch Club Members using the 'after' cursor
+        refetched_before_member = await client.get_club_members(player.club.tag, before=club_members.paging.cursors.before, limit=5) # Refetch Club Members using the 'before' cursor
+    
+    await nb.close() # Close the HTTP client session
+
+if __name__ == "__main__":
+    asyncio.run(main()) # Run the main function
+```
+
 ## Notes
 
 - Make sure to replace the player tags and API token.
