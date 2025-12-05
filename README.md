@@ -109,6 +109,6 @@ if __name__ == "__main__":
 
 If you like this project and want to support its development, you can donate:
 
-- **PayPal:** [WORKING IN PROGRESS](https://www.paypal.com/)
+- **PayPal:** [@NovaFenice](https://www.paypal.com/paypalme/novafenice)
 
 Every contribution helps me maintain and improve the library! Thank you for your support! 🙏
