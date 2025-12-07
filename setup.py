@@ -13,7 +13,7 @@ setup(
     install_requires=[
         "httpx", "asyncio"
     ],
-    keywords=["brawl stars", "api", "python", "wrapper"],
+    keywords=["brawl stars", "api", "brawlstars", "brawl" "stars"],
     classifiers=[
         "Programming Language :: Python :: 3",
         "License :: OSI Approved :: MIT License",
