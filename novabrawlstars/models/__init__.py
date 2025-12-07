@@ -8,3 +8,4 @@ from .ranking.brawlerRankingCountryType import BrawlerRankingCountryType
 from .ranking.brawlerRankingType import BrawlerRankingType, BrawlerRankingListType
 from .ranking.playerRankingCountryType import PlayerRankingCountryType
 from .ranking.playerRankingType import PlayerRankingType, PlayerRankingListType
+from .brawler.brawlerType import BrawlerType, BrawlerListType, BrawlerStatsType, AccessoryType, AccessoryListType, StarPowerType, StarPowerListType

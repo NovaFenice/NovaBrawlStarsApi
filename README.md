@@ -215,6 +215,60 @@ if __name__ == "__main__":
     asyncio.run(main()) # Run the main function
 ```
 
+### How to get brawlers info using pagination
+
+```py
+from novabrawlstars.client import NovaBrawlStars
+import os
+import asyncio
+from dotenv import load_dotenv
+
+load_dotenv()
+
+async def main():
+    api_bs = os.getenv("api_bs") # Your Brawl Stars API token
+
+    nb = NovaBrawlStars(api_bs) # Initialize the Brawl Stars API client
+
+    async with nb as client:
+        brawlers = await client.get_brawlers(limit=5) # Get brawlers with pagination
+        after = brawlers.paging.cursors.after # Get the 'after' cursor for pagination
+        refetched_after_brawlers = await client.get_brawlers(limit=5, after=after) # Refetch brawlers using the 'after' cursor
+        before = refetched_after_brawlers.paging.cursors.before # Get the 'before' cursor for pagination
+        refetched_before_brawlers = await client.get_brawlers(limit=5, before=before) # Refetch brawlers using the 'before' cursor
+
+    await nb.close() # Close the HTTP client session
+
+if __name__ == "__main__":
+    asyncio.run(main()) # Run the main function
+```
+
+### How to get brawler info using brawlerId
+
+```py
+from novabrawlstars.client import NovaBrawlStars
+import os
+import asyncio
+from dotenv import load_dotenv
+
+load_dotenv()
+
+async def main():
+    api_bs = os.getenv("api_bs") # Your Brawl Stars API token
+
+    nb = NovaBrawlStars(api_bs) # Initialize the Brawl Stars API client
+
+    async with nb as client:
+        brawler_example = "16000000" # Example brawler ID for Shelly
+        brawler = await client.get_brawler(brawler_example) # Get brawler information
+        print(brawler.name) # Print the brawler's name
+
+    await nb.close() # Close the HTTP client session
+
+if __name__ == "__main__":
+    asyncio.run(main()) # Run the main function
+```
+
 ## Notes
 
 - Make sure to replace the player tags and API token.

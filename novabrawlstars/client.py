@@ -7,7 +7,7 @@ from .exceptions import (
     UnexpectedError,
     ServiceErrorMaintenance
 )
-from .models import Player, BattleLogListType, Club, ClubMemberArgs, ClubRankingCountryType, BrawlerRankingCountryType, PlayerRankingCountryType
+from .models import Player, BattleLogListType, Club, ClubMemberArgs, ClubRankingCountryType, BrawlerRankingCountryType, PlayerRankingCountryType, BrawlerStatsType, BrawlerType
 
 class NovaBrawlStars:
     """
@@ -201,6 +201,18 @@ class NovaBrawlStars:
         return ClubMemberArgs(data)
     
     async def get_ranking_clubs(self, countryCode: str, limit: int | None = None, after: str | None = None, before: str | None = None) -> ClubRankingCountryType:
+        """
+        Retrieves the club rankings for a specific country or globally.
+
+        Args:
+            countryCode (str): A valid 2-letter country code or "global".
+            limit (int | None): Maximum number of clubs to return. Optional.
+            after (str | None): Cursor for pagination to get clubs after this tag. Optional.
+            before (str | None): Cursor for pagination to get clubs before this tag. Optional.
+        
+        Returns:
+            ClubRankingCountryType: An object containing the club rankings data.
+        """
         if len(countryCode) != 2 and countryCode.strip().lower() != "global":
             raise ValueError("countryCode must be a valid 2-letter country code or 'global'.")
         
@@ -224,6 +236,19 @@ class NovaBrawlStars:
         return ClubRankingCountryType(data)
     
     async def get_ranking_brawler(self, countryCode: str, brawlerId: str, limit: int | None = None, after: str | None = None, before: str | None = None) -> BrawlerRankingCountryType:
+        """
+        Retrieves the brawler rankings for a specific country or globally.
+
+        Args:
+            countryCode (str): A valid 2-letter country code or "global".
+            brawlerId (str): The ID of the brawler.
+            limit (int | None): Maximum number of players to return. Optional.
+            after (str | None): Cursor for pagination to get players after this tag. Optional.
+            before (str | None): Cursor for pagination to get players before this tag. Optional.
+        
+        Returns:
+            BrawlerRankingCountryType: An object containing the brawler rankings data.
+        """
         if len(countryCode) != 2 and countryCode.strip().lower() != "global":
             raise ValueError("countryCode must be a valid 2-letter country code or 'global'.")
         
@@ -247,6 +272,18 @@ class NovaBrawlStars:
         return BrawlerRankingCountryType(data)
     
     async def get_ranking_player(self, countryCode: str, limit: int | None = None, after: str | None = None, before: str | None = None) -> PlayerRankingCountryType:
+        """
+        Retrieves the player rankings for a specific country or globally.
+
+        Args:
+            countryCode (str): A valid 2-letter country code or "global".
+            limit (int | None): Maximum number of players to return. Optional.
+            after (str | None): Cursor for pagination to get players after this tag. Optional.
+            before (str | None): Cursor for pagination to get players before this tag. Optional.
+        
+        Returns:
+            PlayerRankingCountryType: An object containing the player rankings data.
+        """
         if len(countryCode) != 2 and countryCode.strip().lower() != "global":
             raise ValueError("countryCode must be a valid 2-letter country code or 'global'.")
         
@@ -267,5 +304,50 @@ class NovaBrawlStars:
                 query += f"&limit={limit}"
         
         data: dict = await self.__request(f"/rankings/{countryCode}/players{query}")
-        print(data)
         return PlayerRankingCountryType(data)
+    
+    async def get_brawlers(self, limit: int | None = None, after: str | None = None, before: str | None = None) -> BrawlerStatsType:
+        """
+        Retrieves the list of all brawlers available in the game.
+
+        Args:
+            limit (int | None): Maximum number of brawlers to return. Optional.
+            after (str | None): Cursor for pagination to get brawlers after this tag. Optional.
+            before (str | None): Cursor for pagination to get brawlers before this tag. Optional.
+
+        Returns:
+            BrawlerListType: An object containing the list of brawlers.
+        """
+
+        query = ""
+
+        if limit is not None and limit < 1:
+            raise ValueError("Limit must be greater than 0.")
+        if after is not None and before is not None:
+            raise ValueError("Cannot use both 'after' and 'before' for pagination.")
+        if after is not None:
+            query += f"?after={after}"
+        if before is not None:
+            query += f"?before={before}"
+        if limit is not None:
+            if query == "":
+                query += f"?limit={limit}"
+            else:
+                query += f"&limit={limit}"
+
+        data: dict = await self.__request(f"/brawlers{query}")
+        return BrawlerStatsType(data)
+    
+    async def get_brawler(self, brawlerId: str) -> BrawlerType:
+        """
+        Retrieves information about a specific brawler.
+
+        Args:
+            brawlerId (str): The ID of the brawler.
+
+        Returns:
+            BrawlerType: An object containing the brawler's data.
+        """
+
+        data: dict = await self.__request(f"/brawlers/{brawlerId}")
+        return BrawlerType(data)
