@@ -121,7 +121,93 @@ async def main():
         club_members = await client.get_club_members(player.club.tag, limit=5) # Get Club Members with pagination
         after = club_members.paging.cursors.after # Get the 'after' cursor for pagination
         refetched_after_member = await client.get_club_members(player.club.tag, after=after, limit=5) # Refetch Club Members using the 'after' cursor
-        refetched_before_member = await client.get_club_members(player.club.tag, before=club_members.paging.cursors.before, limit=5) # Refetch Club Members using the 'before' cursor
+        before = refetched_after_member.paging.cursors.before # Get the 'before' cursor for pagination
+        refetched_before_member = await client.get_club_members(player.club.tag, before=before, limit=5) # Refetch Club Members using the 'before' cursor
+    
+    await nb.close() # Close the HTTP client session
+
+if __name__ == "__main__":
+    asyncio.run(main()) # Run the main function
+```
+
+### How to get ranking clubs info using pagination
+
+```py
+from novabrawlstars.client import NovaBrawlStars
+import os
+import asyncio
+from dotenv import load_dotenv
+
+load_dotenv()
+
+async def main():
+    api_bs = os.getenv("api_bs") # Your Brawl Stars API token
+
+    nb = NovaBrawlStars(api_bs) # Initialize the Brawl Stars API client
+
+    async with nb as client:
+        ranking_clubs = await client.get_ranking_clubs("global", limit=5) # Get Ranking Clubs with pagination
+        after = ranking_clubs.paging.cursors.after # Get the 'after' cursor for pagination
+        refetched_after_club = await client.get_ranking_clubs("global", after=after, limit=5) # Refetch Club Members using the 'after' cursor
+        before = refetched_after_club.paging.cursors.before # Get the 'before' cursor for pagination
+        refetched_before_club = await client.get_ranking_clubs("global", before=before, limit=5) #  Refetch Club Members using the 'before' cursor
+    
+    await nb.close() # Close the HTTP client session
+
+if __name__ == "__main__":
+    asyncio.run(main()) # Run the main function
+```
+
+### How to get ranking brawlers info using pagination
+
+```py
+from novabrawlstars.client import NovaBrawlStars
+import os
+import asyncio
+from dotenv import load_dotenv
+
+load_dotenv()
+
+async def main():
+    api_bs = os.getenv("api_bs") # Your Brawl Stars API token
+
+    nb = NovaBrawlStars(api_bs) # Initialize the Brawl Stars API client
+
+    async with nb as client:
+        brawler_id = "16000000" # Example Brawler ID for Shelly
+        ranking_brawler = await client.get_ranking_brawler("global", brawlerId=brawler_id, limit=5) # Get Ranking Brawlers with pagination
+        after = ranking_brawler.paging.cursors.after # Get the 'after' cursor for pagination
+        refetched_after_brawler = await client.get_ranking_brawler("global", brawlerId=brawler_id, after=after, limit=5) # Refetch Ranking Brawlers using the 'after' cursor
+        before = refetched_after_brawler.paging.cursors.before # Get the 'before' cursor for pagination
+        refetched_before_brawler = await client.get_ranking_brawler("global", brawlerId=brawler_id ,before=before, limit=5) #  Refetch Ranking Brawlers using the 'before' cursor
+    
+    await nb.close() # Close the HTTP client session
+
+if __name__ == "__main__":
+    asyncio.run(main()) # Run the main function
+```
+
+### How to get ranking players info using pagination
+
+```py
+from novabrawlstars.client import NovaBrawlStars
+import os
+import asyncio
+from dotenv import load_dotenv
+
+load_dotenv()
+
+async def main():
+    api_bs = os.getenv("api_bs") # Your Brawl Stars API token
+
+    nb = NovaBrawlStars(api_bs) # Initialize the Brawl Stars API client
+
+    async with nb as client:
+        ranking_player = await client.get_ranking_player("global", limit=5) # Get Ranking Players with pagination
+        after = ranking_player.paging.cursors.after # Get the 'after' cursor for pagination
+        refetched_after_player = await client.get_ranking_player("global", after=after, limit=5) # Refetch Ranking Players using the 'after' cursor
+        before = refetched_after_player.paging.cursors.before # Get the 'before' cursor for pagination
+        refetched_before_player = await client.get_ranking_player("global", before=before, limit=5) #  Refetch Ranking Players using the 'before' cursor
     
     await nb.close() # Close the HTTP client session
 

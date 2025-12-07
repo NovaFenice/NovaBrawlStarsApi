@@ -64,5 +64,9 @@ class BrawlerStatsListType:
         Args:
             data (List[dict]): List of dictionaries containing brawler stats info from the API.
         """
+
+        if data is None:
+            data = []
+
         self.brawlersList: List[BrawlerStatsType] = [BrawlerStatsType(b) for b in data if b]
         """A list of BrawlerStatsType objects representing the player's brawlers."""

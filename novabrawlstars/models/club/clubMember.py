@@ -45,6 +45,9 @@ class ClubMemberList:
         Args:
             data (List[dict]): List of dictionaries containing raw member info from the API.
         """
+
+        if data is None:
+            data = []
         
         self.clubMemberList: List[ClubMember] = [ClubMember(m) for m in data if m]
         """A list of ClubMember objects representing the members of the club."""

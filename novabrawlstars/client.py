@@ -7,7 +7,7 @@ from .exceptions import (
     UnexpectedError,
     ServiceErrorMaintenance
 )
-from .models import Player, BattleLogListType, Club, ClubMemberArgs
+from .models import Player, BattleLogListType, Club, ClubMemberArgs, ClubRankingCountryType, BrawlerRankingCountryType, PlayerRankingCountryType
 
 class NovaBrawlStars:
     """
@@ -199,3 +199,73 @@ class NovaBrawlStars:
         tagClub = self.__clean_tag(tagClub)
         data: dict = await self.__request(f"/clubs/%23{tagClub}/members{query}")
         return ClubMemberArgs(data)
+    
+    async def get_ranking_clubs(self, countryCode: str, limit: int | None = None, after: str | None = None, before: str | None = None) -> ClubRankingCountryType:
+        if len(countryCode) != 2 and countryCode.strip().lower() != "global":
+            raise ValueError("countryCode must be a valid 2-letter country code or 'global'.")
+        
+        query = ""
+
+        if limit is not None and limit < 1:
+            raise ValueError("Limit must be greater than 0.")
+        if after is not None and before is not None:
+            raise ValueError("Cannot use both 'after' and 'before' for pagination.")
+        if after is not None:
+            query += f"?after={after}"
+        if before is not None:
+            query += f"?before={before}"
+        if limit is not None:
+            if query == "":
+                query += f"?limit={limit}"
+            else:
+                query += f"&limit={limit}"
+        
+        data: dict = await self.__request(f"/rankings/{countryCode}/clubs")
+        return ClubRankingCountryType(data)
+    
+    async def get_ranking_brawler(self, countryCode: str, brawlerId: str, limit: int | None = None, after: str | None = None, before: str | None = None) -> BrawlerRankingCountryType:
+        if len(countryCode) != 2 and countryCode.strip().lower() != "global":
+            raise ValueError("countryCode must be a valid 2-letter country code or 'global'.")
+        
+        query = ""
+
+        if limit is not None and limit < 1:
+            raise ValueError("Limit must be greater than 0.")
+        if after is not None and before is not None:
+            raise ValueError("Cannot use both 'after' and 'before' for pagination.")
+        if after is not None:
+            query += f"?after={after}"
+        if before is not None:
+            query += f"?before={before}"
+        if limit is not None:
+            if query == "":
+                query += f"?limit={limit}"
+            else:
+                query += f"&limit={limit}"
+
+        data: dict = await self.__request(f"/rankings/{countryCode}/brawlers/{brawlerId}{query}")
+        return BrawlerRankingCountryType(data)
+    
+    async def get_ranking_player(self, countryCode: str, limit: int | None = None, after: str | None = None, before: str | None = None) -> PlayerRankingCountryType:
+        if len(countryCode) != 2 and countryCode.strip().lower() != "global":
+            raise ValueError("countryCode must be a valid 2-letter country code or 'global'.")
+        
+        query = ""
+
+        if limit is not None and limit < 1:
+            raise ValueError("Limit must be greater than 0.")
+        if after is not None and before is not None:
+            raise ValueError("Cannot use both 'after' and 'before' for pagination.")
+        if after is not None:
+            query += f"?after={after}"
+        if before is not None:
+            query += f"?before={before}"
+        if limit is not None:
+            if query == "":
+                query += f"?limit={limit}"
+            else:
+                query += f"&limit={limit}"
+        
+        data: dict = await self.__request(f"/rankings/{countryCode}/players{query}")
+        print(data)
+        return PlayerRankingCountryType(data)

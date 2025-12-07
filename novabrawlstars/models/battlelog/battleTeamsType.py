@@ -28,7 +28,7 @@ class BattleTeamType:
     """
     Represents a single team consisting of one or more players in a battle.
     """
-    def __init__(self, data: list):
+    def __init__(self, data: List[dict]):
         """
         Initialize the BattleTeamType object.
 
@@ -45,7 +45,7 @@ class BattleTeamsListType:
     """
     Represents the collection of conflicting teams in a battle.
     """
-    def __init__(self, data: list):
+    def __init__(self, data: List[dict]):
         """
         Initialize the BattleTeamsListType object.
 
